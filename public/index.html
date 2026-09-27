@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Doodle Dash</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+</head>
+<body>
+  <main id="app">
+    <section id="homeView" class="view active">
+      <div class="brand"><span class="brand-dot"></span> DOODLE DASH</div>
+      <div class="hero">
+        <div>
+          <p class="eyebrow">REAL-TIME PARTY GAME · 2–8 PLAYERS</p>
+          <h1>Draw it.<br/><span>Guess it.</span></h1>
+          <p class="sub">Grab a phone or laptop, join a room, and see drawings appear live.</p>
+        </div>
+        <div class="home-card">
+          <label>Your name</label>
+          <input id="homeName" maxlength="20" placeholder="e.g. John Doe" autocomplete="off" />
+          <button id="createBtn" class="primary">Create room <span>→</span></button>
+          <div class="divider"><span>or</span></div>
+          <label>Room code</label>
+          <div class="join-row"><input id="joinCode" maxlength="5" placeholder="AB12C" autocomplete="off"/><button id="joinBtn" class="secondary">Join</button></div>
+          <p id="homeError" class="error"></p>
+        </div>
+      </div>
+      <div class="rules-strip">
+        <div><strong>5</strong><span>rounds</span></div><div><strong>60s</strong><span>per drawing</span></div><div><strong>150</strong><span>max base pts</span></div><div><strong>0</strong><span>sign-ins</span></div>
+      </div>
+      <div class="footer">
+        <p>Made with ❤️ by <strong>Neeraj Ojha</strong></p>
+        <div class="social-links">
+          <a href="https://linkedin.com/in/neerajojha1855" target="_blank"><i class="ri-linkedin-fill"></i></a>
+          <a href="https://github.com/neerajojha1855" target="_blank"><i class="ri-github-fill"></i></a>
+          <a href="https://neeraj-ojha.replit.app" target="_blank"><i class="ri-global-line"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="lobbyView" class="view">
+      <header class="topbar"><div class="brand"><span class="brand-dot"></span> SKETCH & GUESS</div><div class="room-pill">ROOM <b id="lobbyRoomCode">-----</b></div></header>
+      <div class="lobby-grid">
+        <div class="panel invite-panel">
+          <p class="eyebrow">YOUR ROOM</p>
+          <h2>Invite your crew.</h2>
+          <p>Share this code. Everyone joins on their own device.</p>
+          <div class="big-code" id="bigRoomCode">-----</div>
+          <button id="copyBtn" class="secondary full">Copy invite code</button>
+          <p id="copyStatus" class="muted center"></p>
+        </div>
+        <div class="panel players-panel">
+          <div class="panel-head"><div><p class="eyebrow">PLAYERS</p><h2 id="playerCount">0 / 8</h2></div><span id="hostHint" class="muted">Host can start</span></div>
+          <div id="lobbyPlayers" class="player-list"></div>
+          <button id="startBtn" class="primary full" disabled>Start game <span>→</span></button>
+          <p id="lobbyError" class="error"></p>
+        </div>
+      </div>
+      <div class="rules-box"><h3>How to play</h3><p>One player gets a secret word and draws it. Everyone else guesses in real time. Correct guesses earn up to 150 points; the drawer gets 100 when someone finds the word. Highest total score wins.</p></div>
+    </section>
+
+    <section id="gameView" class="view">
+      <header class="topbar gamebar"><div class="brand"><span class="brand-dot"></span> SKETCH & GUESS</div><div class="game-meta"><span id="roundLabel">ROUND 1 / 5</span><span class="timer" id="timerLabel">60</span></div></header>
+      <div class="game-layout">
+        <aside class="side left-side">
+          <div class="panel score-panel"><p class="eyebrow">LEADERBOARD</p><div id="sideScores"></div></div>
+          <div class="panel hint-panel"><p class="eyebrow">ROOM</p><div class="small-code" id="gameRoomCode">-----</div><button id="copyGameCode" class="ghost">Copy code</button></div>
+        </aside>
+        <section class="play-area">
+          <div class="status-line"><span id="turnText">Your turn to draw</span><span id="wordReveal" class="word-chip"></span></div>
+          <div class="canvas-wrap"><canvas id="drawCanvas"></canvas><div id="canvasOverlay" class="canvas-overlay"><div class="overlay-inner"><div class="spinner"></div><span>Waiting for the next round…</span></div></div></div>
+          <div id="drawTools" class="draw-tools"><button id="brushTypeBtn" class="tool" title="Change Brush"><i class="ri-brush-line"></i></button><input id="brushColor" type="color" value="#092829" class="tool-color" title="Color"><input id="brushSize" type="range" min="2" max="36" value="5"><button id="eraserBtn" class="tool" title="Eraser"><i class="ri-eraser-line"></i></button><button id="undoBtn" class="tool" title="Undo"><i class="ri-arrow-go-back-line"></i></button><button id="clearBtn" class="tool" title="Clear"><i class="ri-delete-bin-line"></i></button></div>
+        </section>
+        <aside class="side right-side">
+          <div class="panel guess-panel"><div class="panel-head compact"><div><p class="eyebrow">LIVE GUESSES</p></div><span id="guessStatus" class="muted"></span></div><div id="guessFeed" class="guess-feed"></div><form id="guessForm" class="guess-form"><input id="guessInput" maxlength="80" placeholder="Type your guess…" autocomplete="off"><button>Send</button></form><p id="guessMessage" class="guess-message"></p></div>
+          <div class="panel players-mini"><p class="eyebrow">IN ROOM</p><div id="gamePlayers"></div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="endView" class="view">
+      <div class="end-card"><p class="eyebrow">GAME COMPLETE</p><h1 id="winnerTitle">🏆 Final scores</h1><p id="winnerSub" class="sub center"></p><div id="finalScores" class="final-scores"></div><button id="playAgainBtn" class="primary">Play again <span>→</span></button><button id="homeBtn" class="ghost fullish">Leave room</button></div>
+    </section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
